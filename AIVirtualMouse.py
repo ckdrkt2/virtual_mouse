@@ -77,7 +77,7 @@ while True:
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime = cTime
-    # cv2.putText(img, str(int(fps)), (28, 58), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
+    cv2.putText(img, str(int(fps)), (28, 58), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
     cv2.putText(img, str(int(x_stack.variance())), (580, 58), cv2.FONT_HERSHEY_PLAIN, 2, (8, 8, 255), 3)
     cv2.putText(img, str(int(y_stack.variance())), (580, 108), cv2.FONT_HERSHEY_PLAIN, 2, (8, 8, 255), 3)
 
