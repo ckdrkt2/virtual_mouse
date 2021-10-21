@@ -16,7 +16,7 @@ cap = cv2.VideoCapture(0)
 cap.set(3, wCam)
 cap.set(4, hCam)
 
-detector = htm.handDetector(maxHands=1)
+detector = htm.handDetector(maxHands=1)     
 wScr, hScr = autopy.screen.size()
 
 class stack():
@@ -82,7 +82,7 @@ while True:
     cv2.putText(img, str(int(y_stack.variance())), (580, 108), cv2.FONT_HERSHEY_PLAIN, 2, (8, 8, 255), 3)
 
     print(x_stack.variance(), y_stack.variance())
-    if x_stack.variance() > 100 and y_stack.variance() > 100:
+    if x_stack.variance() > 200 and y_stack.variance() > 200:
             autopy.mouse.click()
             x_stack.clear()
             y_stack.clear()
