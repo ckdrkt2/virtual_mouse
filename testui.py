@@ -15,7 +15,7 @@ class Button(QPushButton):
     @pyqtSlot(bool)
     def slot_toggle(self, state):
         self.setStyleSheet("background-color: %s" % ({True: "green", False: "red"}[state]))
-        self.setText({True: "ON", False: "OFF"}[state])
+        self.setText({True: "ON", False: "OFF"}[state]) 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
