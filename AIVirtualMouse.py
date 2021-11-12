@@ -16,7 +16,7 @@ cap = cv2.VideoCapture(0)
 cap.set(3, wCam)
 cap.set(4, hCam)
 
-detector = htm.handDetector(maxHands=1)     
+detector = htm.handDetector(maxHands=1)
 wScr, hScr = autopy.screen.size()
 
 class stack():
@@ -42,25 +42,29 @@ class stack():
         self.stack = []
         self.length = 0
 
+x_cor, y_cor = stack(), stack()
 x_stack = stack()
 y_stack = stack()
 s = time.time()
-# while time.time() - s < 10:
+
 while True:
     success, img = cap.read()
     img = detector.findHands(img, draw=True)
     lmList, bbox = detector.findPosition(img, draw=False)
 
     if len(lmList) != 0:
-        x1, y1 = lmList[5][1:]
-        x2, y2 = lmList[8][1:]
+        x1, y1, z1 = lmList[0][1:]
+        x2, y2, z2 = lmList[8][1:]
 
+        x_cor.add(x1)
+        y_cor.add(y1)
         x_stack.add(x2)
         y_stack.add(y2)
 
         fingers = detector.fingersUp()
         cv2.rectangle(img, (frameR, frameR), (wCam - frameR, hCam - frameR), (255, 0, 255), 2)
 
+        print(x_stack.variance(), y_stack.variance())
 
         if fingers[1] == 1 and sum(fingers) == 1:
 
@@ -74,18 +78,19 @@ while True:
             cv2.circle(img, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
             plocX, plocY = clocX, clocY
 
+        
+            if y_stack.variance() > 80 and x_cor.variance() < 30 and y_cor.variance() < 30:
+                autopy.mouse.click()
+                x_stack.clear()
+                y_stack.clear()
+
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime = cTime
+    
     cv2.putText(img, str(int(fps)), (28, 58), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
-    cv2.putText(img, str(int(x_stack.variance())), (580, 58), cv2.FONT_HERSHEY_PLAIN, 2, (8, 8, 255), 3)
-    cv2.putText(img, str(int(y_stack.variance())), (580, 108), cv2.FONT_HERSHEY_PLAIN, 2, (8, 8, 255), 3)
-
-    print(x_stack.variance(), y_stack.variance())
-    if x_stack.variance() > 100 and y_stack.variance() > 100:
-            autopy.mouse.click()
-            x_stack.clear()
-            y_stack.clear()
+    # cv2.putText(img, str(int(x_stack.variance())), (580, 58), cv2.FONT_HERSHEY_PLAIN, 2, (8, 8, 255), 3)
+    # cv2.putText(img, str(int(y_stack.variance())), (580, 108), cv2.FONT_HERSHEY_PLAIN, 2, (8, 8, 255), 3)
 
     cv2.imshow("Image", img)
     cv2.waitKey(1)
