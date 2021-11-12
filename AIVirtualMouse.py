@@ -4,6 +4,7 @@ import HandTrackingModule as htm
 import time
 import autopy
 import pandas as pd
+from time import sleep
 
 wCam, hCam = 640, 480
 frameR = 150     #Frame Reduction
