@@ -7,7 +7,8 @@ import PyQt5
 class Button(QPushButton):
     def __init__(self):
         QPushButton.__init__(self, "OFF")
-        self.setFixedSize(1200, 800)
+        # self.setFixedSize(1200, 800)
+        self.showFullScreen()
         self.setStyleSheet("background-color: red")
 
         self.setCheckable(True)
