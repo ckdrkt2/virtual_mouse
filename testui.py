@@ -7,8 +7,8 @@ import PyQt5
 class Button(QPushButton):
     def __init__(self):
         QPushButton.__init__(self, "OFF")
-        # self.setFixedSize(1200, 800)
-        self.showFullScreen()
+        self.setFixedSize(1200, 800)
+        # self.showFullScreen()
         self.setStyleSheet("background-color: red")
 
         self.setCheckable(True)
@@ -17,6 +17,7 @@ class Button(QPushButton):
     @pyqtSlot(bool)
     def slot_toggle(self, state):
         self.setStyleSheet("background-color: %s" % ({True: "green", False: "red"}[state]))
+        self.setFont(QFont('times', 100))
         self.setText({True: "ON", False: "OFF"}[state]) 
 
 if __name__ == '__main__':
