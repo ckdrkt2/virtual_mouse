@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import HandTrackingModule as htm
 import time
-import mouse as cursor
-from pynput.mouse import Button, Controller
+import autopy
+import matplotlib.pyplot as plt
 
 wCam, hCam = 640, 480
 frameR = 100     #Frame Reduction
@@ -18,13 +18,7 @@ cap.set(4, hCam)
 
 detector = htm.handDetector(maxHands=1)
 
-mouse = Controller()
-
-mouse.move(9999,9999)
-
-wScr, hScr = mouse.position
-wScr += 1
-hScr += 1
+wScr, hScr = autopy.screen.size()
 
 class stack():
 
@@ -111,20 +105,24 @@ while True:
             clocY = plocY + (y3 - plocY) / smoothening
             
             try:
-                cursor.move(wScr - clocX, clocY)
-                pass
+                autopy.mouse.move(wScr - clocX, clocY)
+                # cv2.circle(img, (x1, y1), 15, (255, 0, 255), cv2.FILLED)
             except:
                 print(wScr - clocX, clocY)
             plocX, plocY = clocX, clocY 
 
             if x_cor.variance() < 15 and y_cor.variance() < 15:
-            
+                # if y_stack.variance() > 200:
+                #     autopy.mouse.click()
+                #     cv2.putText(img, 'click', (28, 58), cv2.FONT_HERSHEY_PLAIN, 3, (8, 8, 255), 3)
                 if y_stack.diff() != False:
                     dif1, dif2 = y_stack.diff()
                     # print(dif1, dif2)
-
+                    if dif1[-1] > 1: print('a', time.time())
+                    print(dif1)
                     if sum(dif2) < -10:
-                        mouse.click(Button.left, 1)
+                        autopy.mouse.click()
+                        print('b', time.time())
                         cv2.putText(img, 'click', (28, 58), cv2.FONT_HERSHEY_PLAIN, 5, (8, 8, 255), 5)
                         y_stack.clear()
             
