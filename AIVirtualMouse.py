@@ -1,18 +1,19 @@
 import cv2
 import numpy as np
 import HandTrackingModule as htm
+import mystack as ms
 import time
 import mouse as cursor
 from pynput.mouse import Button, Controller
 
 wCam, hCam = 640, 480
-frameR = 100     #Frame Reduction
-smoothening = 7  #random value
+frameR = 100
+smoothening = 7
 
 pTime = 0
 plocX, plocY = 0, 0
 clocX, clocY = 0, 0
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 cap.set(3, wCam)
 cap.set(4, hCam)
 
@@ -23,60 +24,13 @@ mouse = Controller()
 mouse.move(9999,9999)
 
 wScr, hScr = mouse.position
-wScr += 1
-hScr += 1
-
-class stack():
-
-    def __init__(self, max_length):
-        self.max_length = max_length
-        self.stack = []
-        self.length = 0
-
-    def add(self, n):
-        self.stack.append(n)
-        self.length += 1
-        if self.length > self.max_length:
-            self.stack.pop(0)
-            self.length -= 1
-    
-    def variance(self):
-        if self.length == self.max_length:
-            return np.var(self.stack)
-        else:
-            return 0
-
-    def average(self):
-        if self.length > 0:
-            return sum(self.stack)/self.length
-        else:
-            return 0
-
-    def derivative(self):
-        if self.length == self.max_length:
-            return sum([self.stack[i+1] - self.stack[i] for i in range(self.length-1)])
-        else:
-            return 0
-
-    def diff(self):
-        if self.length == self.max_length:
-            diff1 = np.diff(self.stack)
-            diff2 = np.diff(diff1)
-            return diff1, diff2
-        else:
-            return False
-
-    def clear(self):
-        self.stack = []
-        self.length = 0
+wScr += 1; hScr += 1
 
 stack_length = 5
-x_cor, y_cor = stack(stack_length), stack(stack_length)
-z2 = 0
-y2 = 0
-y_stack = stack(stack_length)
+max_var = 10
+max_diff = -20
 
-aa,bb,cc, dd = [], [], [], []
+x_cor, y_cor, y_stack = ms.mystack(stack_length), ms.mystack(stack_length), ms.mystack(stack_length)
 
 fingers = [0, 0, 0, 0, 0]
 
@@ -87,12 +41,12 @@ while True:
 
     if len(lmList) != 0:
 
-        x1, y1, z1 = lmList[5][1:]
-        x2, y2, z2 = lmList[8][1:]
+        x_y = np.array([0,0])
+        for i in [1,2,3,4,9,13,17]:
+            x_y = np.add(x_y, lmList[i][1:])
+        x1, y1 = x_y / 7
 
-        z2 *= 100
-
-        y_stack.add(y2)
+        y_stack.add(lmList[8][2])
 
         x_cor.add(x1)
         y_cor.add(y1)
@@ -116,27 +70,34 @@ while True:
             except:
                 print(wScr - clocX, clocY)
             plocX, plocY = clocX, clocY 
-
-            if x_cor.variance() < 15 and y_cor.variance() < 15:
             
-                if y_stack.diff() != False:
-                    dif1, dif2 = y_stack.diff()
-                    # print(dif1, dif2)
-
-                    if sum(dif2) < -10:
-                        mouse.click(Button.left, 1)
-                        cv2.putText(img, 'click', (28, 58), cv2.FONT_HERSHEY_PLAIN, 5, (8, 8, 255), 5)
-                        y_stack.clear()
-            
+            if x_cor.var() < max_var and y_cor.var() < max_var:
+                # print('a', y_stack.stack, end=' ')
+                if y_stack.diff() < max_diff:
+                    mouse.click(Button.left, 1)
+                    cv2.putText(img, 'click', (458, 58), cv2.FONT_HERSHEY_PLAIN, 5, (8, 8, 255), 5)
+                    y_stack.clear()
+                # else:
+                #     print()
             else:
+                # print(y_cor.var(), '#############')
                 y_stack.clear()
+        else:
+            y_stack.clear()
+    
+    else:
+        pass
+        # break
 
     cTime = time.time()
     fps = 1/(cTime-pTime)
     pTime = cTime
     
     cv2.putText(img, str(int(fps)), (28, 58), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
-    # cv2.putText(img, str(int(fingers[1])), (28, 108), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
+    # cv2.putText(img, str(int(y2)), (28, 108), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
+    # cv2.putText(img, str(int(x_cor.var())), (528, 58), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
+    # cv2.putText(img, str(int(y_cor.var())), (528, 108), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
+    # print(x_cor.var(), y_cor.var())
 
     cv2.imshow("Image", img)
     if cv2.waitKey(1) == ord('q'):
