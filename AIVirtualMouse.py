@@ -1,13 +1,12 @@
 import cv2
 import numpy as np
 import HandTrackingModule as htm
-import mystack as ms
+from HandTrackingModule import mystack as ms
 import time
 import mouse as cursor
 from pynput.mouse import Button, Controller
 import threading
-from multiprocessing import Process 
-import playsound
+import winsound
 
 class untacttact:
 
@@ -19,11 +18,6 @@ class untacttact:
         pTime = 0
         plocX, plocY = 0, 0
         clocX, clocY = 0, 0
-        # cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-        # cap.set(3, wCam)
-        # cap.set(4, hCam)
-
-        # detector = htm.handDetector(maxHands=1)
 
         mouse = Controller()
 
@@ -78,15 +72,11 @@ class untacttact:
                     plocX, plocY = clocX, clocY 
                     
                     if x_cor.var() < max_var and y_cor.var() < max_var:
-                        # print('a', y_stack.stack, end=' ')
                         if y_stack.diff() < max_diff:
                             mouse.click(Button.left, 1)
                             cv2.putText(img, 'click', (458, 58), cv2.FONT_HERSHEY_PLAIN, 5, (8, 8, 255), 5)
                             y_stack.clear()
-                        # else:
-                        #     print()
                     else:
-                        # print(y_cor.var(), '#############')
                         y_stack.clear()
                 else:
                     y_stack.clear()
@@ -100,10 +90,6 @@ class untacttact:
             pTime = cTime
             
             cv2.putText(img, str(int(fps)), (28, 58), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
-            # cv2.putText(img, str(int(y2)), (28, 108), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
-            # cv2.putText(img, str(int(x_cor.var())), (528, 58), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
-            # cv2.putText(img, str(int(y_cor.var())), (528, 108), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
-            # print(x_cor.var(), y_cor.var())
 
             cv2.imshow("Image", img)
             if cv2.waitKey(1) == ord('q'):
@@ -113,7 +99,9 @@ class untacttact:
 if __name__ == '__main__':
 
     def sound():
-        playsound.playsound('mooyaho.mp3')
+        fr = 2000
+        du = 1000
+        winsound.Beep(fr, du)
 
     wCam, hCam = 640, 480
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -134,7 +122,7 @@ if __name__ == '__main__':
             distance = int(bbox[-1]*-100)
 
             cv2.putText(img, str(distance), (28, 58), cv2.FONT_HERSHEY_PLAIN, 3, (255, 8, 8), 3)
-            # print(bbox[2]-bbox[0], bbox[3] - bbox[1])
+
             if distance > 10 and (bbox[2]-bbox[0] > 100 or bbox[3] - bbox[1] > 100):
 
                 t = threading.Thread(target=sound)
