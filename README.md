@@ -6,6 +6,8 @@
 ## Demo
 > 무정차 방지 키오스크 조작 영상
 
+![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/72551588/151789989-00e94c38-4845-4530-9eb5-8d18d411e8de.gif)
+
 
 ## Dependencies
 - openCv
