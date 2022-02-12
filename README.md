@@ -4,9 +4,15 @@
 > 기존의 화면에 터치하여 조작하는 키오스크 방식을 대체하기 위해 손의 랜드마크를 감지하고 제스처 패턴을 추적하는 실시간 카메라와 함께 Python, openCV, Mediapipe를 활용한 비접촉 터치 시스템을 개발했습니다. 비접촉 시스템은 화면에 손으로 조작할 수 있는 가상의 마우스 구현을 통해 화면 조작을 진행합니다.
 
 ## Demo
+> 기본 조작 및 터치 영상
+
+![ezgif com-gif-maker](https://user-images.githubusercontent.com/72551588/153698854-328a58e7-0f7d-4e6a-bfaa-a66fc44f754a.gif)
+
+
 > 무정차 방지 키오스크 조작 영상
 
 ![ezgif com-gif-maker (1)](https://user-images.githubusercontent.com/72551588/151789989-00e94c38-4845-4530-9eb5-8d18d411e8de.gif)
+
 
 
 ## Dependencies
